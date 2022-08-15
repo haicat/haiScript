@@ -1,0 +1,83 @@
+{
+	"scriptlets": [
+		{
+			"name": "Vid2Gif",
+			"outputFromInput" : true,
+			"options": [
+				{
+					"name": "Input File",
+					"id": "inFile",
+					"type": "file",
+					"dir": "input",
+					"bind": "input"
+				},
+				{
+					"name": "Output File",
+					"id": "outFile",
+					"type": "file",
+					"dir": "output",
+					"bind": "output",
+					"ext": "gif"
+				},
+				{
+					"name": "Dithering",
+					"id": "dither",
+					"type": "multi",
+					"choices": [
+						{
+							"name": "None",
+							"value": "paletteuse=new=1:dither=none"
+						}
+					]
+				}
+			],
+			"shell": [
+				"ffmpeg -i ${inFile} -vf palettegen ${!env}\\palette.png",
+				"ffmpeg -i ${inFile} -i ${!env}\\palette.png -lavfi ${dither} ${outFile}"
+			]
+		},
+		{
+			"name": "Test Scriptlet",
+			"options": [
+				{
+					"name": "Input File",
+					"id": "inFile",
+					"type": "file",
+					"dir": "in",
+					"bind": "input"
+				},
+				{
+					"name": "Output File",
+					"id": "outFile",
+					"type": "file",
+					"dir": "out",
+					"bind": "output"
+				},
+				{
+					"name": "Multi Select",
+					"id": "multiSelect",
+					"type": "multi",
+					"choices": [
+						{
+							"name": "Option 1",
+							"value": "Option 1 Selected"
+						},
+						{
+							"name": "Option 2",
+							"value": "Option 2 Selected"
+						},
+						{
+							"name": "Option 3",
+							"value": "Option 3 Selected"
+						}
+					]
+				}
+			],
+			"shell": [
+				"echo ${inFile}",
+				"echo ${outFile}",
+				"echo ${multiSelect}"
+			]
+		}
+	]
+}

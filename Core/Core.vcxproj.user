@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LocalDebuggerWorkingDirectory>.\env</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>--piss --env="C:\Users\haicat\source\repos\wfut\Core\env\appEnv" --config="C:\Users\haicat\source\repos\wfut\Core\env\config.json"</LocalDebuggerCommandArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LocalDebuggerCommandArguments>--piss --env="C:\Users\haicat\source\repos\wfut\Core\env\appEnv" --config="C:\Users\haicat\source\repos\wfut\Core\env\config.json"</LocalDebuggerCommandArguments>
+    <LocalDebuggerWorkingDirectory>.\env</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+</Project>

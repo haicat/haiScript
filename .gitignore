@@ -1,0 +1,6 @@
+.vs
+Debug
+x64
+Core/Debug
+Core/x64
+Core/include/nlohmann/*
