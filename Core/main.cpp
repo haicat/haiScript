@@ -5,14 +5,15 @@ using namespace System;
 
 using namespace System::Windows::Forms;
 
+using namespace config;
 
 
 void processFlag(String^ flag, String^ value) {
     if (flag == "env" && value != nullptr) {
-        config::setCharConfig(&config::setEnvPath, (gcnew FileInfo(value))->FullName);
+        setCharConfig(&setEnvPath, (gcnew FileInfo(value))->FullName);
     }
     if (flag == "config" && value != nullptr) {
-        config::setCharConfig(&config::setConfigPath, (gcnew FileInfo(value))->FullName);
+        setCharConfig(&setConfigPath, (gcnew FileInfo(value))->FullName);
     }
 }
 
@@ -20,6 +21,9 @@ void processFlag(String^ flag, String^ value) {
 int main(array<String^>^ args)
 
 {
+
+    data::option::registerOption("file",data::options::file::create);
+    data::option::registerOption("multi", data::options::multi::create);
 
     Application::EnableVisualStyles();
 
@@ -49,7 +53,7 @@ int main(array<String^>^ args)
 
     Application::Run(% form);
 
-    config::freeConfig();
+    freeConfig();
 
     return 0;
 }

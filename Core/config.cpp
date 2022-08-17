@@ -52,6 +52,33 @@ namespace config {
 			this->type = type;
 			this->name = name;
 		}
+		void option::registerOption(String^ name, option ^ (*createOption)(optionArgs^)) {
+			optionRegistryEntry^ entry = gcnew optionRegistryEntry(name, createOption);
+			optionRegistry.Add(entry->name, entry);
+		}
+		option^ option::createOption(String^ name, optionArgs^ args) {
+			return (*(optionRegistry[name]->createOption))(args);
+		}
+
+		void option::rerender(Object^ caller, System::EventArgs^ args) {
+			option::rerenderE(caller, args);
+		}
+
+		/*
+		void option::bind(Object^ caller, bindEventArgs^ args) {
+			option::bindE(caller, args);
+		}
+
+		bindEventArgs::bindEventArgs(String^ bindName, Object^ bindValue) {
+			this->bindName = bindName;
+			this->bindValue = bindValue;
+		};
+		*/
+
+		optionRegistryEntry::optionRegistryEntry(String^ name, option ^ (*createOption)(optionArgs^)) {
+			this->name = name;
+			this->createOption = createOption;
+		}
 
 		option^ scriptlet::getOption(String^ id) {
 			for each (option^ opt in this->options) {
@@ -100,53 +127,6 @@ namespace config {
 			String^ text::getString() {
 				return content;
 			}
-		}
-
-		namespace options {
-			file::file(String^ id, String^ name) : option(id, name, types::file) {
-			}
-			file::file(String^ id, String^ name, String^ dir, String^ bind, String^ ext) : option(id, name, types::file) {
-				this->dir = dir;
-				this->bind = bind;
-				this->ext = ext;
-			}
-			String^ file::getString() {
-				if (this->fInfo == nullptr) {
-					return "\"\"";
-				}
-				return "\""+this->fInfo->FullName+"\"";
-			}
-
-
-			multi::choice::choice(String^ name, String^ value) {
-				this->name = name;
-				this->value = value;
-			}
-			String^ multi::choice::getString() {
-				return this->value;
-			}
-
-
-			multi::multi(String^ id, String^ name) : option(id, name, types::multi) {};
-			String^ multi::getString() {
-				return this->choices[this->selection]->getString();
-			}
-			void multi::addChoice(String^ name, String^ value) {
-				this->choices.Add(gcnew choice(name,value));
-			}
-			Generic::List<String^>^ multi::mapChoices() {
-				Generic::List<String^>^ list = gcnew Generic::List<String^>();
-				for each (data::options::multi::choice ^ choice in this->choices) {
-					list->Add(choice->name);
-				}
-				return list;
-			}
-			
-			error::error(String^ id, String^ name) : option(id, name, types::error) {};
-			String^ error::getString() {
-				return nullptr;
-			}
-
 		}
 
 	}

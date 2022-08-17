@@ -23,6 +23,20 @@ namespace config {
 			};
 		}
 
+		//typedef Generic::Dictionary<String^, String^> bindings;
+		public ref class optionArgs : public Generic::Dictionary<String^, String^>{
+		public:
+			String^ operator^(String^ key) {
+				if (this->ContainsKey(key)) {
+					return this[key];
+				}
+				else {
+					return "";
+				}
+			}
+		};
+		typedef optionArgs bindings;
+
 		public interface class renderable {
 			virtual String^ getString();
 		};
@@ -33,14 +47,30 @@ namespace config {
 
 		};
 
+		ref class option;
+
+		public ref class optionRegistryEntry {
+		public:
+			optionRegistryEntry(String^, option ^ (*)(optionArgs^));
+			String^ name;
+			option^ (*createOption)(optionArgs^);
+		};
+
 		public ref class option : public renderable
 		{
 		public:
+			static event System::EventHandler^ rerenderE;
+			
+			static void rerender(Object^, System::EventArgs^);
+			static Generic::Dictionary<String^,optionRegistryEntry^> optionRegistry;
+			static void registerOption(String^, option ^ (*)(optionArgs^));
+			static option^ createOption(String^, optionArgs^);
 			String^ id;
 			String^ name;
-			Object^ control;
+			Windows::Forms::Control^ control;
 			options::types type;
 			virtual String^ getString() = 0;
+			virtual Windows::Forms::Control^ getControl(bindings^) = 0;
 			option(String^, String^, options::types);
 		};
 
@@ -71,42 +101,6 @@ namespace config {
 				virtual String^ getString();
 			};
 		}
-		namespace options {
-			public ref class file : public option {
-			public:
-				FileInfo^ fInfo;
-				String^ dir;
-				String^ bind;
-				String^ ext;
-				file(String^, String^);
-				file(String^, String^, String^, String^, String^);
-				virtual String^ getString() override;
-			};
-
-			public ref class multi : public option {
-			public:
-				ref class choice : public renderable {
-				private:
-					String^ value;
-				public:
-					String^ name;
-					choice(String^, String^);
-					virtual String^ getString();
-				};
-				multi(String^, String^);
-				Generic::List<choice^> choices;
-				unsigned int selection;
-				void addChoice(String^, String^);
-				virtual String^ getString() override;
-				Generic::List<String^>^ mapChoices();
-			};
-
-			public ref class error : public option {
-			public:
-				error(String^, String^ id);
-				String^ getString() override;
-			};
-		}
 
 		public ref class scriptlet : public renderable {
 		public:
@@ -127,3 +121,5 @@ namespace config {
 
 	data::config^ parseConfig(String^ fName);
 }
+
+#include "options.h"

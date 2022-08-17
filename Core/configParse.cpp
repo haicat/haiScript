@@ -1,29 +1,12 @@
 #include <fstream>
-#include "include/nlohmann/json.hpp"
+#include "common.h"
 #include "config.h"
 
-
-using json = nlohmann::json;
 using namespace System::Runtime::InteropServices;
 
 
 
 namespace config {
-
-
-	inline String^ jGetKeyS(json j) {
-		if (!j.is_string()) {
-			return nullptr;
-		}
-		return gcnew String(j.get<std::string>().c_str());
-	}
-
-	inline bool jGetKeyB(json j) {
-		if (!j.is_boolean()) {
-			return false;
-		}
-		return j.get<bool>();
-	}
 
 	Generic::List<String^>^ __lineTokenize(String^ line, Generic::List<String^>^ tokens) {
 		if (line == "") {
@@ -84,7 +67,7 @@ namespace config {
 		return shell;
 	}
 
-
+	/*
 	data::options::multi^ parseMulti(json jOption, String^ id, String^ name) {
 		data::options::multi^ multi = gcnew data::options::multi(id, name);
 
@@ -97,17 +80,36 @@ namespace config {
 
 		return multi;
 	}
+	*/
 
 	data::option^ parseOption(json jOption) {
 		data::option^ Option;
+		/*
 		String^ id		= jGetKeyS(jOption["id"]);
 		String^ name	= jGetKeyS(jOption["name"]);
 		String^ type	= jGetKeyS(jOption["type"]);
 		String^ dir		= jGetKeyS(jOption["dir"]);
 		String^ bind	= jGetKeyS(jOption["bind"]);
 		String^ ext		= jGetKeyS(jOption["ext"]);
+		*/
 
+		data::optionArgs^ args = gcnew data::optionArgs;
 
+		for (json::iterator it = jOption.begin(); it != jOption.end(); ++it) {
+			if (it.value().is_string()) {
+				args->Add(gcnew String(it.key().c_str()), jGetKeyS(it.value()));
+				continue;
+			}
+			args->Add(gcnew String(it.key().c_str()), gcnew String(it.value().dump(4).c_str()));
+		}
+
+		if (args->ContainsKey("type")) {
+			Option = data::option::createOption(args["type"], args);
+		}
+		else {
+			Option = gcnew config::data::options::error();
+		}
+		/*
 		if (type == "file") {
 			Option = gcnew config::data::options::file(id, name, dir, bind, ext);
 		}
@@ -117,6 +119,9 @@ namespace config {
 		else {
 			Option = gcnew config::data::options::error(id, name);
 		}
+
+		*/
+
 		return Option;
 	}
 
