@@ -21,18 +21,18 @@ void processFlag(String^ flag, String^ value) {
 int main(array<String^>^ args)
 
 {
-
+    //All option field types need to be registered here
     data::option::registerOption("file",data::options::file::create);
     data::option::registerOption("multi", data::options::multi::create);
 
+
     Application::EnableVisualStyles();
-
     Application::SetCompatibleTextRenderingDefault(false);
-
     Core::UIMain form;
 
-    Collections::Generic::List<String^> lArgs(args);
 
+    //Processing --flag args
+    Collections::Generic::List<String^> lArgs(args);
     while (lArgs.Count > 0) {
         if (!lArgs[0]->StartsWith("--")) {
             break;
@@ -48,8 +48,8 @@ int main(array<String^>^ args)
         }
         processFlag(arg, val);
     }
-
     form.args = %lArgs;
+
 
     Application::Run(% form);
 

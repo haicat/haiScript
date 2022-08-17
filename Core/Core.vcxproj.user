@@ -3,10 +3,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerWorkingDirectory>.\env</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>--piss --env="C:\Users\haicat\source\repos\wfut\Core\env\appEnv" --config="C:\Users\haicat\source\repos\wfut\Core\env\config.json" pee pp</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--env=".\appEnv" --config=".\config.json" someinput.asd someoutput.fgh</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>--piss --env="C:\Users\haicat\source\repos\wfut\Core\env\appEnv" --config="C:\Users\haicat\source\repos\wfut\Core\env\config.json" pee pp</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--env=".\appEnv" --config=".\config.json" someinput.asd someoutput.fgh</LocalDebuggerCommandArguments>
     <LocalDebuggerWorkingDirectory>.\env</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>

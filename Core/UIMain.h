@@ -9,17 +9,27 @@ namespace Core {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
-	/// <summary>
-	/// Summary for UIMain
-	/// </summary>
 	public ref class UIMain : public System::Windows::Forms::Form
 	{
 	public:
+		/// <summary>
+		/// container for loaded config file
+		/// </summary>
 		config::data::config^ cfg;
+
+		/// <summary>
+		/// which scriptlet is selected
+		/// </summary>
 		int selectedScriptlet = 0;
-		TextBox^ fileReturn = nullptr;
+
+		/// <summary>
+		/// args passed in from main.cpp
+		/// </summary>
 		Collections::Generic::List<String^>^ args;
 
+		/// <summary>
+		/// select and parse a scriptlet
+		/// </summary>
 		void selectScriptlet(int index) {
 			optionPanel->Controls->Clear();
 			this->selectedScriptlet = index;
@@ -66,22 +76,34 @@ namespace Core {
 
 #pragma region Event Handlers
 
+		/// <summary>
+		/// event handler for when the user selects a scriptlet
+		/// </summary>
 		void scriptletChanged(Object^ sender, EventArgs^ e) {
 			auto cScriptlet = (ComboBox^)sender;
 			selectScriptlet(cScriptlet->SelectedIndex);
 		}
 		System::EventHandler^ scriptletChangedE = gcnew System::EventHandler(this, &Core::UIMain::scriptletChanged);
 
+		/// <summary>
+		/// event handler for when the user presses the run button
+		/// </summary>
 		void runPressed(Object^ sender, EventArgs^ e) {
 			renderAndRun();
 		}
 		System::EventHandler^ runPressedE = gcnew System::EventHandler(this, &Core::UIMain::runPressed);
 
+		/// <summary>
+		/// event handler for when the ui is loaded
+		/// </summary>
 		System::Void UIMain_Load(System::Object^ sender, System::EventArgs^ e) {
 			loadCFG(config::configPath());
 			config::data::option::rerenderE += renderScriptletE;
 		}
 
+		/// <summary>
+		/// event handler for when the scriptlet sends us output during execution
+		/// </summary>
 		void scriptletOutput(Object^ sender, Diagnostics::DataReceivedEventArgs^ e) {
 			consoleWrite(e->Data);
 		}
@@ -90,6 +112,7 @@ namespace Core {
 #pragma endregion
 
 #pragma region Console write
+		//we gotta do some shenanigans here since .net *really* doesn't like us trying to access controls from a separate thread (which the scriptlet is being run in)
 		delegate void consoleWriteD(String^, TextBox^);
 		void consoleWrite(String^ out) {
 			if (consoleOut->InvokeRequired) {
@@ -101,10 +124,12 @@ namespace Core {
 		}
 		static void _consoleWrite(String^ out, TextBox^ to) {
 			to->Text += out + "\r\n";
-			//consoleWrite(out);
 		}
 #pragma endregion
 
+		/// <summary>
+		/// Load our scriptlet config from a file
+		/// </summary>
 		void loadCFG(String^ fName) {
 			scriptletSelect->SelectedIndexChanged -= scriptletChangedE;
 
@@ -120,17 +145,26 @@ namespace Core {
 			selectScriptlet(0);
 		}
 
+		/// <summary>
+		/// render the scriptlet options to text
+		/// </summary>
 		inline String^ renderScriptlet() {
 			String^ rendered = cfg->scriptlets[selectedScriptlet]->getString();
 			this->consoleIn->Text = rendered;
 			return rendered;
 		}
 
+		/// <summary>
+		/// event handler to render scriptlets when options are updated
+		/// </summary>
 		void renderScriptlet(Object^ sender, System::EventArgs^ e) {
 			renderScriptlet();
 		}
 		System::EventHandler^ renderScriptletE = gcnew System::EventHandler(this, &Core::UIMain::renderScriptlet);
 
+		/// <summary>
+		/// render the scriptlet to a file and run it
+		/// </summary>
 		void renderAndRun() {
 			String^ envPath = config::envPath();
 			Directory::Delete(envPath,true);
@@ -193,7 +227,7 @@ namespace Core {
 		/// </summary>
 		System::ComponentModel::Container^ components;
 
-#pragma region Windows Form Designer generated code
+#pragma region Windows Form Designer generated code (lol not anymore because msvs is fucking shit)
 		/// <summary>
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.

@@ -47,9 +47,8 @@ namespace config {
 			return list;
 		}
 
-		option::option(String^ id, String^ name, options::types type) {
+		option::option(String^ id, String^ name) {
 			this->id = id;
-			this->type = type;
 			this->name = name;
 		}
 		void option::registerOption(String^ name, option ^ (*createOption)(optionArgs^)) {
@@ -63,17 +62,6 @@ namespace config {
 		void option::rerender(Object^ caller, System::EventArgs^ args) {
 			option::rerenderE(caller, args);
 		}
-
-		/*
-		void option::bind(Object^ caller, bindEventArgs^ args) {
-			option::bindE(caller, args);
-		}
-
-		bindEventArgs::bindEventArgs(String^ bindName, Object^ bindValue) {
-			this->bindName = bindName;
-			this->bindValue = bindValue;
-		};
-		*/
 
 		optionRegistryEntry::optionRegistryEntry(String^ name, option ^ (*createOption)(optionArgs^)) {
 			this->name = name;

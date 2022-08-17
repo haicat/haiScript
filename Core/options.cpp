@@ -29,9 +29,9 @@ namespace config {
 				}
 			};
 
-			file::file(String^ id, String^ name) : option(id, name, types::file) {
+			file::file(String^ id, String^ name) : option(id, name) {
 			}
-			file::file(String^ id, String^ name, String^ dir, String^ bind, String^ ext) : option(id, name, types::file) {
+			file::file(String^ id, String^ name, String^ dir, String^ bind, String^ ext) : option(id, name) {
 				this->dir = dir;
 				this->bind = bind;
 				this->ext = ext;
@@ -173,7 +173,7 @@ namespace config {
 				return opt;
 			};
 
-			multi::multi(String^ id, String^ name) : option(id, name, types::multi) {};
+			multi::multi(String^ id, String^ name) : option(id, name) {};
 			String^ multi::getString() {
 				return this->choices[this->selection]->getString();
 			}
@@ -214,7 +214,7 @@ namespace config {
 #pragma endregion
 
 #pragma region error
-			error::error() : option("", "", types::error) {};
+			error::error() : option("", "") {};
 			String^ error::getString() {
 				return nullptr;
 			}
