@@ -101,6 +101,8 @@ namespace Core {
 			config::data::option::rerenderE += renderScriptletE;
 		}
 
+		StreamReader^ errReader;
+
 		/// <summary>
 		/// event handler for when the scriptlet sends us output during execution
 		/// </summary>
@@ -120,10 +122,10 @@ namespace Core {
 				consoleOut->Invoke(d, gcnew array<Object^>{ out, consoleOut });
 				return;
 			}
-			consoleOut->Text += out + "\r\n";
+			consoleOut->AppendText(out + "\r\n");
 		}
 		static void _consoleWrite(String^ out, TextBox^ to) {
-			to->Text += out + "\r\n";
+			to->AppendText(out + "\r\n");
 		}
 #pragma endregion
 
@@ -162,10 +164,14 @@ namespace Core {
 		}
 		System::EventHandler^ renderScriptletE = gcnew System::EventHandler(this, &Core::UIMain::renderScriptlet);
 
+
+		
+
 		/// <summary>
 		/// render the scriptlet to a file and run it
 		/// </summary>
 		void renderAndRun() {
+			consoleOut->Text = "";
 			String^ envPath = config::envPath();
 			Directory::Delete(envPath,true);
 			Directory::CreateDirectory(envPath);
@@ -179,14 +185,22 @@ namespace Core {
 
 			pInfo->UseShellExecute = false;
 			pInfo->RedirectStandardOutput = true;
+			pInfo->RedirectStandardError = true;
+			pInfo->ErrorDialog = true;
+			pInfo->CreateNoWindow = true;
+			
 			String^ cd = Directory::GetCurrentDirectory();
 
 			pInfo->WorkingDirectory = cd;
 
 			Diagnostics::Process^ p = Diagnostics::Process::Start(pInfo);
 
+			
+			//errReader = p->StandardError;
 			p->OutputDataReceived += scriptletOutputE;
+			p->ErrorDataReceived += scriptletOutputE;
 			p->BeginOutputReadLine();
+			p->BeginErrorReadLine();
 			//p->WaitForExit();
 			
 
