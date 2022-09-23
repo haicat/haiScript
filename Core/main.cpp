@@ -24,6 +24,7 @@ int main(array<String^>^ args)
     //All option field types need to be registered here
     data::option::registerOption("file",data::options::file::create);
     data::option::registerOption("multi", data::options::multi::create);
+    data::option::registerOption("text", data::options::text::create);
 
 
     Application::EnableVisualStyles();

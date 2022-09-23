@@ -209,8 +209,37 @@ namespace config {
 
 				return multiOpt;
 			}
+#pragma endregion
 
+#pragma region text
+			text::text(String^ id, String^ name) : option(id, name) {};
 
+			option^ text::create(optionArgs^ args) {
+				text^ opt = gcnew text(args["id"], args["name"]);
+				return opt;
+			};
+
+			String^ text::getString() {
+				return this->value;
+			}
+
+			void textChanged(Object^ sender, EventArgs^ e) {
+				auto cText = (TextBox^)sender;
+				auto oText = (text^)(cText->Tag);
+				if (oText == nullptr) { return; }
+				oText->value = cText->Text;
+				option::rerender(sender, e);
+				return;
+			}
+
+			Control^ text::getControl(bindings^ binds) {
+				TextBox^ textOpt = gcnew TextBox();
+				textOpt->Tag = this;
+				textOpt->Name = this->id;
+				textOpt->Width = 100;
+				textOpt->TextChanged += gcnew System::EventHandler(&textChanged);
+				return textOpt;
+			}
 #pragma endregion
 
 #pragma region error

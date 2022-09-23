@@ -37,6 +37,15 @@ namespace config {
 				static option^ create(optionArgs^);
 			};
 
+			public ref class text : public option {
+			public:
+				text(String^, String^);
+				String^ value;
+				virtual String^ getString() override;
+				virtual Windows::Forms::Control^ getControl(bindings^) override;;
+				static option^ create(optionArgs^);
+			};
+
 			public ref class error : public option {
 			public:
 				error();
