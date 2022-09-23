@@ -1,42 +1,6 @@
 {
 	"scriptlets": [
 		{
-			"name": "Vid2Gif",
-			"outputFromInput" : true,
-			"options": [
-				{
-					"name": "Input File",
-					"id": "inFile",
-					"type": "file",
-					"dir": "input",
-					"bind": "input"
-				},
-				{
-					"name": "Output File",
-					"id": "outFile",
-					"type": "file",
-					"dir": "output",
-					"bind": "output",
-					"ext": "gif"
-				},
-				{
-					"name": "Dithering",
-					"id": "dither",
-					"type": "multi",
-					"choices": [
-						{
-							"name": "None",
-							"value": "paletteuse=new=1:dither=none"
-						}
-					]
-				}
-			],
-			"shell": [
-				"ffmpeg -i ${inFile} -vf palettegen ${!env}\\palette.png",
-				"ffmpeg -i ${inFile} -i ${!env}\\palette.png -lavfi ${dither} ${outFile}"
-			]
-		},
-		{
 			"name": "Test Scriptlet",
 			"options": [
 				{
@@ -71,12 +35,19 @@
 							"value": "Option 3 Selected"
 						}
 					]
+				},
+				{
+					"name": "Free Text",
+					"id": "freeText",
+					"type": "text"
 				}
 			],
 			"shell": [
+				"echo Builtin varible !env returned: ${!env}",
 				"echo ${inFile}",
 				"echo ${outFile}",
-				"echo ${multiSelect}"
+				"echo ${multiSelect}",
+				"echo ${freeText}"
 			]
 		}
 	]
