@@ -44,7 +44,7 @@ namespace config {
 
 	Generic::List<data::ShellToken^>^ parseShell(json j, data::scriptlet^ scriptlet) {
 		if (!j.is_string()) {
-			return nullptr;
+			throw gcnew config::JSONParseException("Shell item not of type string.");
 		}
 		Generic::List<data::ShellToken^>^ shell = gcnew Generic::List<data::ShellToken^>();
 		String^ line = jGetKeyS(j);
@@ -67,31 +67,9 @@ namespace config {
 		return shell;
 	}
 
-	/*
-	data::options::multi^ parseMulti(json jOption, String^ id, String^ name) {
-		data::options::multi^ multi = gcnew data::options::multi(id, name);
-
-		for (auto& iChoice : jOption["choices"].items()) {
-			json jChoice = iChoice.value();
-			String^ name = jGetKeyS(jChoice["name"]);
-			String^ value = jGetKeyS(jChoice["value"]);
-			multi->addChoice(name, value);
-		}
-
-		return multi;
-	}
-	*/
 
 	data::option^ parseOption(json jOption) {
 		data::option^ Option;
-		/*
-		String^ id		= jGetKeyS(jOption["id"]);
-		String^ name	= jGetKeyS(jOption["name"]);
-		String^ type	= jGetKeyS(jOption["type"]);
-		String^ dir		= jGetKeyS(jOption["dir"]);
-		String^ bind	= jGetKeyS(jOption["bind"]);
-		String^ ext		= jGetKeyS(jOption["ext"]);
-		*/
 
 		data::optionArgs^ args = gcnew data::optionArgs;
 
@@ -107,20 +85,8 @@ namespace config {
 			Option = data::option::createOption(args["type"], args);
 		}
 		else {
-			Option = gcnew config::data::options::error();
+			throw gcnew config::JSONParseException("Option does not contain a type.");
 		}
-		/*
-		if (type == "file") {
-			Option = gcnew config::data::options::file(id, name, dir, bind, ext);
-		}
-		else if (type == "multi") {
-			Option = parseMulti(jOption, id, name);
-		}
-		else {
-			Option = gcnew config::data::options::error(id, name);
-		}
-
-		*/
 
 		return Option;
 	}
@@ -140,21 +106,39 @@ namespace config {
 			fStream = fInfo->OpenRead();
 		}
 		catch (...) {
-			return nullptr;
+			throw gcnew config::JSONParseException("Could not open configuration file.");
 		}
 		
 
 		std::ifstream f(sfName);
-		json j = json::parse(f);
+		json j;
+		try {
+			j = json::parse(f);
+		}
+		catch (json::parse_error e) {
+			throw gcnew JSONParseException(gcnew String(e.what()));
+		}
 
 		fStream->Close();
+
+		if (!j.contains("scriptlets")) {
+			throw gcnew JSONParseException("Top level JSON does not contain scriptlets key.");
+		}
 
 		for (auto& iScriptlet : j["scriptlets"].items()) {
 			json jScriptlet = iScriptlet.value();
 			data::scriptlet^ scriptlet = gcnew data::scriptlet();
 			scriptlet->name = jGetKeyS(jScriptlet["name"]);
-			scriptlet->outputFromInput = jGetKeyB(jScriptlet["outputFromInput"]);
+			scriptlet->outputFromInput = jGetKeyB(jScriptlet["outputFromInput"],"", false);
 			
+			if (!jScriptlet.contains("options")) {
+				throw gcnew JSONParseException("Scriptlet does not contain options key.");
+			}
+
+			if (!jScriptlet.contains("shell")) {
+				throw gcnew JSONParseException("Scriptlet does not contain shell key.");
+			}
+
 			for (auto& iOption : jScriptlet["options"].items()) {
 				json jOption = iOption.value();
 				data::option^ option = parseOption(jOption);

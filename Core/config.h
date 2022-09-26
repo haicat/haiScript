@@ -6,6 +6,14 @@ using namespace System::Collections;
 using namespace System::IO;
 
 namespace config {
+
+	/// <summary>
+	/// Error with parsing JSON
+	/// </summary>
+	public ref class JSONParseException : Exception {
+	public:
+		JSONParseException(String^ message);
+	};
 	
 	/// <summary>
 	/// set a native global config variable

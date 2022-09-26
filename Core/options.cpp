@@ -241,25 +241,6 @@ namespace config {
 				return textOpt;
 			}
 #pragma endregion
-
-#pragma region error
-			error::error() : option("", "") {};
-			String^ error::getString() {
-				return nullptr;
-			}
-
-			Control^ error::getControl(bindings^ binds) {
-				auto c = gcnew Windows::Forms::Label();
-				c->Text = "<ERROR!!>";
-				return c;
-			}
-
-			option^ error::create(optionArgs^) {
-				return gcnew error();
-			};
-
-#pragma endregion
-
 		}
 	}
 }

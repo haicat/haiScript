@@ -45,14 +45,6 @@ namespace config {
 				virtual Windows::Forms::Control^ getControl(bindings^) override;;
 				static option^ create(optionArgs^);
 			};
-
-			public ref class error : public option {
-			public:
-				error();
-				String^ getString() override;
-				virtual Windows::Forms::Control^ getControl(bindings^) override;
-				static option^ create(optionArgs^);
-			};
 		}
 	}
 }

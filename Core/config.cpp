@@ -3,12 +3,14 @@
 
 namespace config {
 
+	JSONParseException::JSONParseException(String^ message) : Exception(message) {
+	}
+
 	wchar_t* setEnvPath = nullptr;
 	wchar_t* setConfigPath = nullptr;
 
 	void setCharConfig(wchar_t** config, String^ value) {
 		(*config) = new wchar_t[value->Length+1];
-		//array<wchar_t>^ vAry = value->ToCharArray();
 		for (int i = 0; i < value->Length; i++) {
 			(*config)[i] = value[i];
 		}
@@ -74,7 +76,7 @@ namespace config {
 					return opt;
 				}
 			}
-			return nullptr;
+			throw gcnew JSONParseException("No option exists with specified ID \""+ id +"\"");
 		}
 
 		String^ scriptlet::getString() {
@@ -97,7 +99,7 @@ namespace config {
 				if (this->token == "!env") {
 					return envPath();
 				}
-				throw gcnew System::ArgumentException("Built in variable \""+token+"\" does not exist.");
+				throw gcnew JSONParseException("Built in variable \""+token+"\" does not exist.");
 				return "";
 			}
 

@@ -135,7 +135,14 @@ namespace Core {
 		void loadCFG(String^ fName) {
 			scriptletSelect->SelectedIndexChanged -= scriptletChangedE;
 
-			cfg = config::parseConfig(fName);
+			try {
+				cfg = config::parseConfig(fName);
+			}
+			catch (config::JSONParseException^ jsonE) {
+				MessageBox::Show(nullptr,"JSON parse error while loading configuration file:\n" + jsonE->Message,"haiScript error");
+				this->Close();
+				return;
+			}
 
 			scriptletSelect->Items->Clear();
 			scriptletSelect->Items->AddRange(cfg->mapScriptlets()->ToArray());
