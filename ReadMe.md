@@ -1,5 +1,4 @@
-# This tool is a VERY EARLY WIP. Expect crashes and instability!
-# USE AT YOUR OWN RISK
+# This tool is a VERY EARLY WIP. Expect some crashes and instability!
 
 This tool lets you define a UI for a shell script. It lets you create a set of inputs from the UI, and then generates a shell script which it then runs.
 
